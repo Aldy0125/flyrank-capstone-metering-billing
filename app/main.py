@@ -1,14 +1,17 @@
 from fastapi import FastAPI
 
 from app.api.health import router as health_router
+from app.api.v1.generate import router as generate_router
+from app.api.v1.usage import router as usage_router
+
 from app.config.settings import settings
 
 
-# Initialize FastAPI application
 app = FastAPI(
     title=settings.app_name,
 )
 
 
-# Register API routers
 app.include_router(health_router)
+app.include_router(generate_router)
+app.include_router(usage_router)

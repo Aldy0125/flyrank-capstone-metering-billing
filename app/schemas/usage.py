@@ -1,4 +1,3 @@
-
 from datetime import date
 
 from pydantic import (
@@ -119,14 +118,26 @@ class UsageResponse(BaseModel):
 
     @model_validator(mode="after")
     def validate_usage_limits(self):
-        if self.api_calls_used + self.api_calls_remaining != self.monthly_api_call_limit:
+        expected_api_remaining = max(
+            0,
+            self.monthly_api_call_limit - self.api_calls_used,
+        )
+
+        expected_ai_remaining = max(
+            0,
+            self.monthly_ai_token_limit - self.ai_tokens_used,
+        )
+
+        if self.api_calls_remaining != expected_api_remaining:
             raise ValueError(
-                "API calls used and remaining must equal the monthly limit."
+                "API calls remaining must equal "
+                "max(0, monthly API limit - API calls used)."
             )
 
-        if self.ai_tokens_used + self.ai_tokens_remaining != self.monthly_ai_token_limit:
+        if self.ai_tokens_remaining != expected_ai_remaining:
             raise ValueError(
-                "AI tokens used and remaining must equal the monthly limit."
+                "AI tokens remaining must equal "
+                "max(0, monthly AI token limit - AI tokens used)."
             )
 
         if self.billing_period_end <= self.billing_period_start:
