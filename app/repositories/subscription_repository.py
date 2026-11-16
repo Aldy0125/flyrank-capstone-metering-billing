@@ -1,3 +1,4 @@
+
 import uuid
 from datetime import datetime
 
@@ -20,6 +21,43 @@ def get_by_tenant_id(
     )
 
     return db.scalar(statement)
+
+
+def get_by_tenant_id_for_update(
+    db: Session,
+    tenant_id: uuid.UUID,
+) -> Subscription | None:
+    """
+    Retrieve and lock a tenant's subscription row.
+    """
+
+    statement = (
+        select(Subscription)
+        .where(Subscription.tenant_id == tenant_id)
+        .with_for_update()
+    )
+
+    return db.scalar(statement)
+
+
+def update_stripe_customer_id(
+    db: Session,
+    *,
+    subscription: Subscription,
+    stripe_customer_id: str,
+) -> Subscription:
+    """
+    Update the Stripe Customer reference.
+
+    The caller controls transaction commit or rollback.
+    """
+
+    subscription.stripe_customer_id = stripe_customer_id
+
+    db.flush()
+    db.refresh(subscription)
+
+    return subscription
 
 
 def create(

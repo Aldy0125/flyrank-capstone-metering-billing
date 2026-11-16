@@ -29,6 +29,16 @@ class Settings(BaseSettings):
     stripe_webhook_secret: SecretStr | None = None
     stripe_pro_price_id: str | None = None
 
+    # Stripe Checkout return URLs
+    stripe_checkout_success_url: str = (
+        "http://localhost:8000/docs"
+        "?checkout=success&session_id={CHECKOUT_SESSION_ID}"
+    )
+
+    stripe_checkout_cancel_url: str = (
+        "http://localhost:8000/docs?checkout=cancel"
+    )
+
     # Inngest configuration
     inngest_app_id: str = "usage-metering-billing"
     inngest_event_key: SecretStr | None = None
