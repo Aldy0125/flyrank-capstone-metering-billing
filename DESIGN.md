@@ -102,7 +102,7 @@ Cached input tokens and reasoning tokens are subsets of their respective token c
 
 ## 5. Database Design
 
-The application uses PostgreSQL and consists of seven main tables.
+The application uses PostgreSQL and consists of eight core tables.
 
 ### 5.1 tenants
 
@@ -463,20 +463,29 @@ The local database mirrors verified Stripe information.
 
 ## 11. Background Processing
 
-Inngest handles scheduled usage-summary processing.
+Inngest handles asynchronous monthly usage report generation.
 
-The application implements a daily_usage_summary function.
+The application persists a background job before dispatching an Inngest event.
 
 ### Configuration
 
-- Trigger: Daily cron schedule at 00:05 UTC.
-- Purpose: Aggregate tenant usage information for operational monitoring.
+- Function: generate-usage-report.
+- Trigger: billing/usage-report.requested.
 - Retry policy: Three retries.
 - Failure handling: Persist permanent failures in job_failures.
 
-The background function must not perform slow processing inside an HTTP request.
+### Processing Flow
 
-Failed executions must produce a traceable operational failure record.
+1. Create a background job with status queued.
+2. Dispatch the Inngest event.
+3. Worker locks the job and changes its status to running.
+4. Aggregate usage for the requested UTC billing period.
+5. Persist the report result as JSONB.
+6. Change the job status to succeeded.
+
+After retries are exhausted, the failure handler changes the job status to failed and records the error in job_failures.
+
+Report generation runs outside the original HTTP request path.
 
 ## 12. Security and Reliability
 

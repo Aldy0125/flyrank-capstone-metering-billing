@@ -17,4 +17,7 @@ __all__ = [
     "UsageEvent",
     "StripeEvent",
     "JobFailure",
+    "BackgroundJob",
 ]
+
+from app.models.background_job import BackgroundJob

@@ -1,0 +1,57 @@
+manifest_version: 1
+
+project:
+  name: "LLM Usage Metering & Billing Service"
+  author: "Aldy Putra Manurung"
+  track: "Backend AI Engineering"
+  cohort: "July 2026"
+  repository: "https://github.com/Aldy0125/flyrank-capstone-metering-billing"
+  status: "pending_review"
+
+runtime:
+  python: "3.13"
+  database: "PostgreSQL 15"
+  framework: "FastAPI"
+  orm: "SQLAlchemy"
+  migrations: "Alembic"
+  payments: "Stripe Test Mode"
+  background_jobs: "Inngest 0.5.20"
+
+features:
+  - multi_tenant_usage_metering
+  - request_idempotency
+  - transactional_usage_recording
+  - quota_enforcement
+  - token_cost_calculation
+  - stripe_checkout
+  - webhook_signature_verification
+  - stripe_event_deduplication
+  - subscription_synchronization
+  - stale_event_protection
+  - asynchronous_usage_reports
+  - background_job_persistence
+  - retry_and_failure_handling
+
+database:
+  migration_head: "6d0b2f9a4c71"
+
+verification:
+  date: "2026-11-18"
+  tests_passed: 145
+  tests_failed: 0
+  tests_skipped: 0
+  warnings: 2
+  stripe_checkout: "sandbox_verified"
+  inngest: "local_end_to_end_verified"
+
+behavioral_probes:
+  idempotency: "automated_tests_passed"
+  quota: "automated_tests_passed"
+  stripe_checkout: "sandbox_verified"
+  webhook_security: "automated_tests_passed"
+  token_pricing: "automated_tests_passed"
+
+external_review:
+  submitted: false
+  accepted: false
+  certificate_issued: false
