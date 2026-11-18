@@ -88,3 +88,19 @@ Last recorded result (18 November 2026):
 - capstone.yaml
 
 No open-source license has been declared.
+
+## Demo Data Initialization
+
+After PostgreSQL is running, initialize the default Free and Pro plans:
+
+1. Start PostgreSQL: docker compose up -d db
+2. Apply migrations: python -m alembic upgrade head
+3. Seed plans: python -m app.seed
+
+The seed operation is safe to repeat. Existing plan configurations are validated and never automatically overwritten.
+
+## Run Application
+
+Run: python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+API documentation: http://127.0.0.1:8000/docs
